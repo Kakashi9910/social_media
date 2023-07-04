@@ -15,6 +15,8 @@ const MongoStore=connectMongo(session);
 import sassMiddleware from 'node-sass-middleware';
 import router from './routes/index.js';
 import bodyParser from 'body-parser'
+import flash from 'connect-flash'
+import customMware from './config/middleware.js'
 // const sassMiddleware =require('node-sass-middleware');
 
 
@@ -70,8 +72,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 app.use(passport.setAuthenticatedUser);
-
+app.use(flash());
 // use express router
+app.use(customMware)
 app.use('/',router);
 
 app.listen(port, function(err){

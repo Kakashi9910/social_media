@@ -10,7 +10,15 @@ export function profile(req, res){
     })
    
 }
-
+export function update(req,res){
+    if(req.user.id==req.params.id){
+        User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
+            return res.redirect('back');
+        })
+    }else{
+       return res.status(401).send('Unauthorised');
+    }
+}
 
 // render the sign up page
 export function signUp(req, res){
@@ -61,11 +69,13 @@ export function create(req, res){
 
 // sign in and create a session for the user
 export function createSession(req, res){
+    req.flash('success','Logged in successfully');
     return res.redirect('/');
 }
 
 export function destroySession(req, res){
     req.logout();
+    req.flash('success','Logged out successfully');
 
     return res.redirect('/');
 }
