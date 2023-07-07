@@ -1,5 +1,7 @@
 import User from '../models/user.js';
-
+import fs from 'fs'
+import path from 'path'
+const __dirname = path.resolve();
 
 export function profile(req, res){
     User.findById(req.params.id,function(err,user){
@@ -10,14 +12,31 @@ export function profile(req, res){
     })
    
 }
-export function update(req,res){
-    if(req.user.id==req.params.id){
-        User.findByIdAndUpdate(req.params.id,req.body,function(err,user){
+export async function update(req,res){  
+        if(req.user.id==req.params.id){
+            try{
+         let user=await User.findByIdAndUpdate(req.params.id)
+         User.uploadedAvatar(req,res,function(err){
+               if(err){
+                console.log("****multer error",err);
+               }
+               user.name=req.body.name;
+               user.email=req.body.email;
+               if(req.file){
+                // if(user.avatar){
+                //     fs.unlinkSync(path.join(__dirname,'.',user.avatar))
+                // }
+                user.avatar=User.avatarPath+'/'+req.file.filename;
+               }
+               user.save();
+               return res.redirect('back')
+            }) 
+        }catch(error){
             return res.redirect('back');
-        })
-    }else{
-       return res.status(401).send('Unauthorised');
-    }
+        }
+
+        }
+
 }
 
 // render the sign up page

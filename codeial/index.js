@@ -17,6 +17,8 @@ import router from './routes/index.js';
 import bodyParser from 'body-parser'
 import flash from 'connect-flash'
 import customMware from './config/middleware.js'
+import path from 'path'
+const __dirname=path.resolve();
 // const sassMiddleware =require('node-sass-middleware');
 
 
@@ -33,7 +35,7 @@ app.use(express.urlencoded({extended:true}));
 app.use(cookieParser());
 
 app.use(express.static('./assets'));
-
+app.use('/uploads',express.static(__dirname+'/uploads'))
 app.use(expressLayouts);
 // extract style and scripts from sub pages into the layout
 app.set('layout extractStyles', true);
